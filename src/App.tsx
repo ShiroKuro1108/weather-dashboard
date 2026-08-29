@@ -9,6 +9,7 @@ import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import TimerIcon from "@mui/icons-material/Timer";
 import GridViewIcon from "@mui/icons-material/GridView";
 import TableChartIcon from "@mui/icons-material/TableChart";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
 import FlightMatrix from "./components/Overview/FlightMatrix";
 import LocationSelector from "./components/Location/LocationSelector";
@@ -16,6 +17,7 @@ import DaySummaryCard from "./components/Weather/DaySummaryCard";
 import WeatherTable from "./components/Weather/WeatherTable";
 import WeatherChart from "./components/Weather/WeatherChart";
 import ThresholdSettings from "./components/Settings/ThresholdSettings";
+import SeasonalDashboard from "./features/seasonal-planning/components/SeasonalDashboard";
 
 import { useAllDistrictsWeather } from "./hooks/useAllDistrictsWeather";
 import { useWeatherData } from "./hooks/useWeatherData";
@@ -76,6 +78,12 @@ export default function App() {
               icon={<TableChartIcon sx={{ fontSize: 18 }} />}
               iconPosition="start"
               label="Chi tiết"
+              sx={{ textTransform: "none", fontWeight: 600, minHeight: 48 }}
+            />
+            <Tab
+              icon={<CalendarMonthIcon sx={{ fontSize: 18 }} />}
+              iconPosition="start"
+              label="Kế hoạch Mùa vụ"
               sx={{ textTransform: "none", fontWeight: 600, minHeight: 48 }}
             />
           </Tabs>
@@ -178,6 +186,9 @@ export default function App() {
             )}
           </>
         )}
+
+        {/* ===== TAB 2: KẾ HOẠCH MÙA VỤ & LỊCH TRÌNH KHẢ QUAN ===== */}
+        {tabIndex === 2 && <SeasonalDashboard />}
       </Container>
 
       <ThresholdSettings
