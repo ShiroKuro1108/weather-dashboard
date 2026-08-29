@@ -7,8 +7,6 @@ import {
   Tabs,
   Tab,
   Button,
-  IconButton,
-  Tooltip,
   LinearProgress,
   Alert,
   Chip,
@@ -42,9 +40,10 @@ export default function SeasonalDashboard() {
   const [subTab, setSubTab] = useState<number>(0);
   const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
 
-  // Load all 28 districts automatically so matrix and reports are always complete
+  // Load all 28 districts with instant 0ms persistence
   const {
     reports,
+    lastUpdated,
     strategicPlan,
     aiReport,
     isLoading,
@@ -75,33 +74,40 @@ export default function SeasonalDashboard() {
             <Typography variant="h6" sx={{ fontWeight: 800, color: "primary.main" }}>
               Kế hoạch Mùa vụ & Báo cáo Khí hậu 28 Huyện (Gia Lai & Bình Định)
             </Typography>
-            <Typography variant="caption" sx={{ color: "text.secondary" }}>
-              Tổng hợp dữ liệu thời tiết nhiều năm • Đánh giá khả năng bay và lập lịch trình tối ưu
-            </Typography>
+            <Stack direction="row" spacing={1} sx={{ alignItems: "center", mt: 0.5, flexWrap: "wrap" }}>
+              <Typography variant="caption" sx={{ color: "text.secondary" }}>
+                Tổng hợp dữ liệu khí hậu 3 năm •
+              </Typography>
+              <Chip
+                size="small"
+                label={`Đã lưu sẵn • Cập nhật lúc: ${lastUpdated}`}
+                variant="outlined"
+                sx={{ height: 20, fontSize: "0.7rem", color: "text.secondary" }}
+              />
+            </Stack>
           </Box>
 
-          <Stack direction="row" spacing={1.5} sx={{ alignItems: "center", flexShrink: 0 }}>
-            <Chip
-              label="28 Huyện / 2 Khu vực • 3 Đội UAV"
+          <Stack direction="row" spacing={1.2} sx={{ alignItems: "center", flexShrink: 0, flexWrap: "wrap", gap: 1 }}>
+            <Button
               variant="outlined"
-              size="small"
               color="primary"
-              sx={{ fontWeight: 700 }}
-            />
-
-            <Tooltip title="Làm mới dữ liệu thời tiết">
-              <IconButton onClick={refetch} color="primary" disabled={isLoading}>
-                <RefreshIcon />
-              </IconButton>
-            </Tooltip>
+              size="small"
+              startIcon={<RefreshIcon />}
+              onClick={refetch}
+              disabled={isLoading}
+              sx={{ textTransform: "none", fontWeight: 700 }}
+            >
+              {isLoading ? `Đang tải (${progress}%)...` : "Tải lại từ API"}
+            </Button>
 
             <Button
               variant="outlined"
+              size="small"
               startIcon={<TuneIcon />}
               onClick={() => setSettingsOpen(true)}
               sx={{ textTransform: "none", fontWeight: 600 }}
             >
-              Cấu hình Đội bay & Năng suất
+              Cấu hình Đội bay
             </Button>
           </Stack>
         </Stack>
