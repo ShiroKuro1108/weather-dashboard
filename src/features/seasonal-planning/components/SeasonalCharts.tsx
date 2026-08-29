@@ -15,6 +15,14 @@ import {
   TableCell,
   TableContainer,
   Chip,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Checkbox,
+  ListItemText,
+  OutlinedInput,
+  Button,
 } from "@mui/material";
 import {
   ResponsiveContainer,
@@ -34,6 +42,8 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import WbSunnyIcon from "@mui/icons-material/WbSunny";
 import AirIcon from "@mui/icons-material/Air";
 import DeviceThermostatIcon from "@mui/icons-material/DeviceThermostat";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import type { LocationMonthlyReport } from "../types/seasonalTypes";
 
 interface Props {
@@ -43,10 +53,15 @@ interface Props {
 
 type MetricType = "precipitation" | "rainy_days" | "dry_days" | "wind" | "sunshine" | "temperature";
 
-const METRIC_CONFIGS: Record<
-  MetricType,
-  { label: string; unit: string; color: string; icon: React.ReactNode; desc: string }
-> = {
+interface MetricConfig {
+  label: string;
+  unit: string;
+  color: string;
+  icon: React.ReactNode;
+  desc: string;
+}
+
+const METRIC_CONFIGS: Record<MetricType, MetricConfig> = {
   precipitation: {
     label: "Lượng mưa",
     unit: "mm",
@@ -94,14 +109,65 @@ const METRIC_CONFIGS: Record<
 const DISTRICT_COLORS = [
   "#29b6f6", "#66bb6a", "#ffa726", "#ec407a", "#ab47bc", "#26a69a",
   "#ff7043", "#7e57c2", "#5c6bc0", "#42a5f5", "#26c6da", "#9ccc65",
+  "#f06292", "#ba68c8", "#4db6ac", "#ffb74d", "#aed581", "#4dd0e1",
+  "#e57373", "#81c784", "#64b5f6", "#ff8a65", "#9575cd", "#4db6ac",
+  "#dce775", "#ffd54f", "#a1887f", "#90a4ae",
+];
+
+// Default featured 6 locations (3 Gia Lai + 3 Binh Dinh)
+const DEFAULT_SELECTED_DISTRICT_IDS = [
+  "pleiku",
+  "an_khe",
+  "ayun_pa",
+  "quy_nhon",
+  "phu_cat",
+  "hoai_nhon",
 ];
 
 export default function SeasonalCharts({ reports, selectedLocationId }: Props) {
   const [viewMode, setViewMode] = useState<"single" | "compare">("compare");
   const [metric, setMetric] = useState<MetricType>("precipitation");
 
+  // Selected district IDs for comparison
+  const [selectedDistrictIds, setSelectedDistrictIds] = useState<string[]>(() => {
+    const validDefaults = DEFAULT_SELECTED_DISTRICT_IDS.filter((id) =>
+      reports.some((r) => r.location.id === id)
+    );
+    return validDefaults.length > 0 ? validDefaults : reports.slice(0, 6).map((r) => r.location.id);
+  });
+
   const activeReport = reports.find((r) => r.location.id === selectedLocationId) ?? reports[0];
   const metricCfg = METRIC_CONFIGS[metric];
+
+  // Filter reports according to selectedDistrictIds
+  const comparedReports = useMemo(() => {
+    if (selectedDistrictIds.length === 0) return reports.slice(0, 6);
+    return reports.filter((r) => selectedDistrictIds.includes(r.location.id));
+  }, [reports, selectedDistrictIds]);
+
+  // Quick preset handlers
+  const handleSelectFeatured = () => {
+    const featured = DEFAULT_SELECTED_DISTRICT_IDS.filter((id) =>
+      reports.some((r) => r.location.id === id)
+    );
+    setSelectedDistrictIds(featured);
+  };
+
+  const handleSelectGiaLai = () => {
+    setSelectedDistrictIds(
+      reports.filter((r) => r.location.province === "Gia Lai").map((r) => r.location.id)
+    );
+  };
+
+  const handleSelectBinhDinh = () => {
+    setSelectedDistrictIds(
+      reports.filter((r) => r.location.province === "Bình Định").map((r) => r.location.id)
+    );
+  };
+
+  const handleSelectAll = () => {
+    setSelectedDistrictIds(reports.map((r) => r.location.id));
+  };
 
   // 1. Single location complete chart data
   const singleLocationData = useMemo(() => {
@@ -126,7 +192,7 @@ export default function SeasonalCharts({ reports, selectedLocationId }: Props) {
     return Array.from({ length: 12 }, (_, i) => {
       const m = i + 1;
       const entry: Record<string, string | number> = { month: `T${m}` };
-      for (const r of reports) {
+      for (const r of comparedReports) {
         const stat = r.monthlyStats.find((s) => s.month === m);
         if (stat) {
           if (metric === "precipitation") entry[r.location.name] = stat.precipitationSum;
@@ -139,7 +205,7 @@ export default function SeasonalCharts({ reports, selectedLocationId }: Props) {
       }
       return entry;
     });
-  }, [reports, metric]);
+  }, [comparedReports, metric]);
 
   const months = Array.from({ length: 12 }, (_, i) => i + 1);
 
@@ -158,7 +224,7 @@ export default function SeasonalCharts({ reports, selectedLocationId }: Props) {
             </Typography>
             <Typography variant="caption" sx={{ color: "text.secondary" }}>
               {viewMode === "compare"
-                ? `Đang so sánh chỉ số: ${metricCfg.label} (${metricCfg.unit}) giữa các huyện`
+                ? `Đang so sánh chỉ số: ${metricCfg.label} (${metricCfg.unit}) giữa ${comparedReports.length} huyện được chọn`
                 : `Đang xem toàn cảnh các chỉ số tại ${activeReport?.location.name}`}
             </Typography>
           </Box>
@@ -173,7 +239,7 @@ export default function SeasonalCharts({ reports, selectedLocationId }: Props) {
           </Tabs>
         </Stack>
 
-        {/* METRIC BUTTONS SELECTOR (BỘ CHUYỂN ĐỔI SỐ LIỆU) */}
+        {/* METRIC BUTTONS SELECTOR */}
         <Box sx={{ mb: 2.5, overflowX: "auto", pb: 0.5 }}>
           <ToggleButtonGroup
             value={metric}
@@ -198,33 +264,166 @@ export default function SeasonalCharts({ reports, selectedLocationId }: Props) {
                     fontWeight: isSelected ? 700 : 500,
                     color: isSelected ? "primary.contrastText" : "text.secondary",
                     bgcolor: isSelected ? "primary.main" : "transparent",
-                    "&.Mui-selected": { bgcolor: "primary.main", color: "primary.contrastText" },
-                    display: "flex",
-                    gap: 0.8,
+                    "&.Mui-selected": {
+                      bgcolor: "primary.main",
+                      color: "primary.contrastText",
+                      "&:hover": { bgcolor: "primary.dark" },
+                    },
                   }}
                 >
-                  {cfg.icon}
-                  <span>{cfg.label} ({cfg.unit})</span>
+                  <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
+                    {cfg.icon}
+                    <span>{cfg.label}</span>
+                  </Stack>
                 </ToggleButton>
               );
             })}
           </ToggleButtonGroup>
         </Box>
 
-        {/* CHART DISPLAY */}
-        <Box sx={{ width: "100%", height: 360 }}>
+        {/* DISTRICT SELECTION BAR FOR COMPARISON */}
+        {viewMode === "compare" && (
+          <Paper
+            variant="outlined"
+            sx={{
+              p: 1.5,
+              mb: 2.5,
+              borderRadius: 1.5,
+              bgcolor: "background.default",
+              borderColor: "divider",
+            }}
+          >
+            <Stack spacing={1.5}>
+              <Stack
+                direction={{ xs: "column", md: "row" }}
+                spacing={1.5}
+                sx={{ alignItems: { xs: "stretch", md: "center" }, justifyContent: "space-between" }}
+              >
+                {/* Multi-Select Dropdown with Checkboxes */}
+                <FormControl size="small" sx={{ flexGrow: 1, maxWidth: { xs: "100%", md: 500 } }}>
+                  <InputLabel id="select-districts-label">
+                    Chọn các huyện muốn đưa vào so sánh ({selectedDistrictIds.length}/{reports.length})
+                  </InputLabel>
+                  <Select
+                    labelId="select-districts-label"
+                    multiple
+                    value={selectedDistrictIds}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setSelectedDistrictIds(typeof val === "string" ? val.split(",") : val);
+                    }}
+                    input={<OutlinedInput label={`Chọn các huyện muốn đưa vào so sánh (${selectedDistrictIds.length}/${reports.length})`} />}
+                    renderValue={(selected) => (
+                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5, maxHeight: 60, overflowY: "auto" }}>
+                        {selected.map((id) => {
+                          const r = reports.find((item) => item.location.id === id);
+                          return (
+                            <Chip
+                              key={id}
+                              size="small"
+                              label={`${r?.location.name} (${r?.location.province === "Bình Định" ? "BĐ" : "GL"})`}
+                              sx={{ height: 22, fontSize: "0.72rem" }}
+                            />
+                          );
+                        })}
+                      </Box>
+                    )}
+                  >
+                    <MenuItem disabled sx={{ fontWeight: 800, color: "#90caf9", bgcolor: "background.paper" }}>
+                      📍 KHU VỰC GIA LAI (17 HUYỆN)
+                    </MenuItem>
+                    {reports
+                      .filter((r) => r.location.province === "Gia Lai")
+                      .map((r) => (
+                        <MenuItem key={r.location.id} value={r.location.id}>
+                          <Checkbox
+                            size="small"
+                            checked={selectedDistrictIds.indexOf(r.location.id) > -1}
+                            icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+                            checkedIcon={<CheckBoxIcon fontSize="small" />}
+                          />
+                          <ListItemText primary={`${r.location.name} (Gia Lai)`} />
+                        </MenuItem>
+                      ))}
+
+                    <MenuItem disabled sx={{ fontWeight: 800, color: "#81c784", bgcolor: "background.paper" }}>
+                      📍 KHU VỰC BÌNH ĐỊNH (11 HUYỆN)
+                    </MenuItem>
+                    {reports
+                      .filter((r) => r.location.province === "Bình Định")
+                      .map((r) => (
+                        <MenuItem key={r.location.id} value={r.location.id}>
+                          <Checkbox
+                            size="small"
+                            checked={selectedDistrictIds.indexOf(r.location.id) > -1}
+                            icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+                            checkedIcon={<CheckBoxIcon fontSize="small" />}
+                          />
+                          <ListItemText primary={`${r.location.name} (Bình Định)`} />
+                        </MenuItem>
+                      ))}
+                  </Select>
+                </FormControl>
+
+                {/* Quick Selection Buttons */}
+                <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap", gap: 0.8 }}>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={handleSelectFeatured}
+                    sx={{ textTransform: "none", fontSize: "0.75rem", fontWeight: 600 }}
+                  >
+                    ⭐ 6 Huyện Tiêu Biểu (3 GL + 3 BĐ)
+                  </Button>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={handleSelectGiaLai}
+                    sx={{ textTransform: "none", fontSize: "0.75rem" }}
+                  >
+                    17 Huyện Gia Lai
+                  </Button>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={handleSelectBinhDinh}
+                    sx={{ textTransform: "none", fontSize: "0.75rem" }}
+                  >
+                    11 Huyện Bình Định
+                  </Button>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    onClick={handleSelectAll}
+                    sx={{ textTransform: "none", fontSize: "0.75rem" }}
+                  >
+                    Tất cả 28 Huyện
+                  </Button>
+                </Stack>
+              </Stack>
+            </Stack>
+          </Paper>
+        )}
+
+        {/* CHART CONTAINER */}
+        <Box sx={{ width: "100%", height: 380, mt: 1 }}>
           {viewMode === "compare" ? (
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={comparisonData} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
+              <BarChart data={comparisonData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" />
                 <XAxis dataKey="month" stroke="#90caf9" />
-                <YAxis stroke="#90caf9" label={{ value: `${metricCfg.label} (${metricCfg.unit})`, angle: -90, position: "insideLeft", fill: "#90caf9" }} />
+                <YAxis stroke="#90caf9" />
                 <Tooltip
-                  contentStyle={{ backgroundColor: "#132f4c", borderColor: "#90caf9", borderRadius: 8 }}
-                  formatter={(value: any, name: any) => [`${value} ${metricCfg.unit}`, name]}
+                  contentStyle={{
+                    backgroundColor: "#132f4c",
+                    borderColor: "#90caf9",
+                    borderRadius: 8,
+                    fontSize: "0.85rem",
+                  }}
+                  formatter={(value: any) => [`${value} ${metricCfg.unit}`, metricCfg.label]}
                 />
-                <Legend />
-                {reports.slice(0, 6).map((r, idx) => (
+                <Legend wrapperStyle={{ paddingTop: 10, fontSize: "0.8rem" }} />
+                {comparedReports.map((r, idx) => (
                   <Bar
                     key={r.location.id}
                     dataKey={r.location.name}
@@ -291,7 +490,7 @@ export default function SeasonalCharts({ reports, selectedLocationId }: Props) {
           <Table size="small">
             <TableHead>
               <TableRow sx={{ bgcolor: "action.hover" }}>
-                <TableCell sx={{ fontWeight: 700, minWidth: 160 }}>Địa bàn</TableCell>
+                <TableCell sx={{ fontWeight: 700, minWidth: 160 }}>Địa bàn ({comparedReports.length} huyện)</TableCell>
                 {months.map((m) => (
                   <TableCell key={m} align="center" sx={{ fontWeight: 700, minWidth: 65 }}>
                     T{m}
@@ -301,7 +500,7 @@ export default function SeasonalCharts({ reports, selectedLocationId }: Props) {
             </TableHead>
 
             <TableBody>
-              {reports.map((r) => (
+              {comparedReports.map((r) => (
                 <TableRow key={r.location.id} hover>
                   <TableCell sx={{ fontWeight: 700, color: "primary.main" }}>
                     {r.location.name}
