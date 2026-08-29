@@ -22,7 +22,7 @@ export interface OpenMeteoArchiveResponse {
 }
 
 const ARCHIVE_BASE_URL = "https://archive-api.open-meteo.com/v1/archive";
-const CACHE_PREFIX = "seasonal_weather_v5_";
+const CACHE_PREFIX = "seasonal_weather_v7_";
 const CACHE_TTL_MS = 14 * 24 * 60 * 60 * 1000; // 14 days
 
 const inMemoryCache = new Map<string, OpenMeteoArchiveResponse>();
