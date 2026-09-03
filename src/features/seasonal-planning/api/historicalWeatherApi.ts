@@ -41,7 +41,10 @@ const DISTRICT_CLIMATE_BENCHMARKS: Record<string, number[][]> = OPENMETEO_DATASE
 export function getClimatologicalBaseline(location: SeasonalLocation): OpenMeteoArchiveResponse {
   const benchmark = DISTRICT_CLIMATE_BENCHMARKS[location.id] || DISTRICT_CLIMATE_BENCHMARKS["quy_nhon"];
 
-  const daysInYear = 365;
+  const baseYear = new Date().getFullYear() - 1;
+  const isLeapYear = (baseYear % 4 === 0 && baseYear % 100 !== 0) || (baseYear % 400 === 0);
+  const daysInYear = isLeapYear ? 366 : 365;
+
   const time: string[] = [];
   const precipitation_sum: number[] = [];
   const precipitation_hours: number[] = [];
@@ -52,8 +55,7 @@ export function getClimatologicalBaseline(location: SeasonalLocation): OpenMeteo
   const temperature_2m_max: number[] = [];
   const temperature_2m_min: number[] = [];
 
-  const baseYear = 2025;
-  const startDate = new Date(`${baseYear}-01-01`);
+  const startDate = new Date(Date.UTC(baseYear, 0, 1));
 
   for (let d = 0; d < daysInYear; d++) {
     const curDate = new Date(startDate);
