@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, lazy, Suspense } from "react";
 import {
   AppBar, Toolbar, Typography, IconButton, Box, Stack, Container, Paper,
   CircularProgress, Alert, Snackbar, Tooltip, Chip, Tab, Tabs,
@@ -10,6 +10,7 @@ import TimerIcon from "@mui/icons-material/Timer";
 import GridViewIcon from "@mui/icons-material/GridView";
 import TableChartIcon from "@mui/icons-material/TableChart";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import RadarIcon from "@mui/icons-material/Radar";
 
 import FlightMatrix from "./components/Overview/FlightMatrix";
 import LocationSelector from "./components/Location/LocationSelector";
@@ -18,6 +19,8 @@ import WeatherTable from "./components/Weather/WeatherTable";
 import WeatherChart from "./components/Weather/WeatherChart";
 import ThresholdSettings from "./components/Settings/ThresholdSettings";
 import SeasonalDashboard from "./features/seasonal-planning/components/SeasonalDashboard";
+
+const RadarDashboard = lazy(() => import("./features/radar-map/components/RadarDashboard"));
 
 import { useAllDistrictsWeather } from "./hooks/useAllDistrictsWeather";
 import { useWeatherData } from "./hooks/useWeatherData";
@@ -84,6 +87,12 @@ export default function App() {
               icon={<CalendarMonthIcon sx={{ fontSize: 18 }} />}
               iconPosition="start"
               label="Kế hoạch Mùa vụ"
+              sx={{ textTransform: "none", fontWeight: 600, minHeight: 48 }}
+            />
+            <Tab
+              icon={<RadarIcon sx={{ fontSize: 18 }} />}
+              iconPosition="start"
+              label="Radar Mưa"
               sx={{ textTransform: "none", fontWeight: 600, minHeight: 48 }}
             />
           </Tabs>
@@ -189,6 +198,19 @@ export default function App() {
 
         {/* ===== TAB 2: KẾ HOẠCH MÙA VỤ & LỊCH TRÌNH KHẢ QUAN ===== */}
         {tabIndex === 2 && <SeasonalDashboard />}
+
+        {/* ===== TAB 3: BẢN ĐỒ RADAR LƯỢNG MƯA & MÂY VỆ TINH (NOWCASTING) ===== */}
+        {tabIndex === 3 && (
+          <Suspense
+            fallback={
+              <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: 450 }}>
+                <CircularProgress size={40} />
+              </Box>
+            }
+          >
+            <RadarDashboard districtData={allDistrictsData.data} />
+          </Suspense>
+        )}
       </Container>
 
       <ThresholdSettings
