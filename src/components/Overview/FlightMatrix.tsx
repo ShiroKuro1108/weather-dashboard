@@ -1,11 +1,13 @@
 import { useState, useMemo } from "react";
 import {
-  Box, Typography, Paper, Stack, LinearProgress, Chip, Divider,
+  Box, Typography, Paper, Stack, LinearProgress, Chip, Divider, Button, Tooltip,
 } from "@mui/material";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import MatrixCell from "./MatrixCell";
 import DetailPanel from "./DetailPanel";
 import type { DistrictWeatherData, DistrictDaySummary, FlightCondition } from "../../types/weather";
 import { GIA_LAI_DISTRICTS, REGION_LABELS } from "../../utils/locations";
+import { exportDailyOverviewMatrixToExcel } from "../../utils/dailyExcelExporter";
 
 interface Props {
   data: Map<string, DistrictWeatherData>;
@@ -94,6 +96,55 @@ export default function FlightMatrix({ data, isLoading, progress }: Props) {
           </Typography>
         </Box>
       )}
+
+      {/* Top Action Bar */}
+      <Stack
+        direction={{ xs: "column", sm: "row" }}
+        spacing={1.5}
+        sx={{
+          justifyContent: "space-between",
+          alignItems: { xs: "flex-start", sm: "center" },
+          mb: 1.5,
+        }}
+      >
+        <Stack direction="row" spacing={1.5} sx={{ alignItems: "center" }}>
+          <Typography variant="h6" sx={{ fontWeight: 700, fontSize: "1.05rem" }}>
+            📊 Ma trận Điều kiện bay theo Ca (7 ngày)
+          </Typography>
+          <Chip
+            label="28 Huyện / TX / TP"
+            size="small"
+            variant="outlined"
+            sx={{ fontWeight: 600, fontSize: "0.75rem", borderColor: "rgba(255,255,255,0.2)" }}
+          />
+        </Stack>
+
+        <Tooltip title="Xuất toàn bộ ma trận lịch bay 7 ngày của 28 huyện ra file Excel">
+          <span>
+            <Button
+              variant="contained"
+              color="success"
+              size="small"
+              startIcon={<FileDownloadIcon />}
+              disabled={isLoading || data.size === 0}
+              onClick={() => exportDailyOverviewMatrixToExcel(data)}
+              sx={{
+                fontWeight: 600,
+                textTransform: "none",
+                borderRadius: 1.5,
+                px: 2,
+                py: 0.7,
+                boxShadow: "0 2px 8px rgba(46, 125, 50, 0.25)",
+                "&:hover": {
+                  boxShadow: "0 4px 12px rgba(46, 125, 50, 0.35)",
+                },
+              }}
+            >
+              Xuất Excel (7 ngày)
+            </Button>
+          </span>
+        </Tooltip>
+      </Stack>
 
       {/* Matrix */}
       <Paper sx={{ overflow: "auto", borderRadius: 2, bgcolor: "background.paper" }}>
