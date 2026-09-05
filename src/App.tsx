@@ -11,6 +11,10 @@ import GridViewIcon from "@mui/icons-material/GridView";
 import TableChartIcon from "@mui/icons-material/TableChart";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import RadarIcon from "@mui/icons-material/Radar";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+
+import { useThemeMode } from "./theme/ThemeModeContext";
 
 import FlightMatrix from "./components/Overview/FlightMatrix";
 import LocationSelector from "./components/Location/LocationSelector";
@@ -55,10 +59,12 @@ export default function App() {
   const refreshMinutes = Math.floor(allDistrictsData.nextRefreshIn / 60);
   const refreshSeconds = allDistrictsData.nextRefreshIn % 60;
 
+  const { mode, toggleTheme } = useThemeMode();
+
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
+    <Box sx={{ minHeight: "100vh", bgcolor: "background.default", color: "text.primary" }}>
       {/* Header */}
-      <AppBar position="sticky" sx={{ bgcolor: "background.paper", backgroundImage: "none" }}>
+      <AppBar position="sticky" elevation={mode === "light" ? 1 : 0} sx={{ bgcolor: "background.paper", backgroundImage: "none" }}>
         <Toolbar>
           <FlightTakeoffIcon sx={{ mr: 1.5, color: "primary.main" }} />
           <Typography variant="h6" sx={{ fontWeight: 700, mr: 2 }}>
@@ -106,6 +112,12 @@ export default function App() {
               sx={{ mr: 1 }}
             />
           )}
+
+          <Tooltip title={mode === "dark" ? "Chuyển sang Giao diện Sáng (Light Mode)" : "Chuyển sang Giao diện Tối (Dark Mode)"}>
+            <IconButton onClick={toggleTheme} color="primary" sx={{ mr: 0.5 }}>
+              {mode === "dark" ? <LightModeIcon sx={{ color: "#facc15" }} /> : <DarkModeIcon sx={{ color: "#64748b" }} />}
+            </IconButton>
+          </Tooltip>
 
           <Tooltip title="Làm mới dữ liệu">
             <IconButton

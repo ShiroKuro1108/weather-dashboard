@@ -3,7 +3,7 @@
  */
 
 import { useState } from "react";
-import { Box, Stack, IconButton, Slider, Typography, Chip, Tooltip, Paper } from "@mui/material";
+import { Box, Stack, IconButton, Slider, Typography, Chip, Tooltip, Paper, useTheme } from "@mui/material";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
@@ -34,6 +34,8 @@ export default function RadarPlaybackBar({
   onNext,
   onJumpToNow,
 }: Props) {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
   const [isMinimized, setIsMinimized] = useState<boolean>(false);
   const currentFrame = frames[currentIndex];
 
@@ -61,8 +63,14 @@ export default function RadarPlaybackBar({
     return `+${diffMins}p`;
   };
 
-  const isNowFrame = currentFrame && Math.abs(currentFrame.time * 1000 - Date.now()) <= 10 * 60 * 1000;
+  const isNowFrame = currentFrame && Math.abs((currentFrame.time * 1000) - Date.now()) <= 5 * 60 * 1000;
   const isNowcast = currentFrame?.type === "nowcast";
+
+  const panelBg = isDark ? "rgba(15, 23, 42, 0.92)" : "rgba(255, 255, 255, 0.94)";
+  const panelBorder = isDark ? "1px solid rgba(255, 255, 255, 0.18)" : "1px solid rgba(0, 0, 0, 0.12)";
+  const panelColor = isDark ? "#fff" : "#0f172a";
+  const btnBg = isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)";
+  const btnColor = isDark ? "#fff" : "#0f172a";
 
   // Compact Minimized Bar
   if (isMinimized) {
@@ -73,15 +81,15 @@ export default function RadarPlaybackBar({
           py: 0.8,
           px: 1.5,
           borderRadius: 20,
-          bgcolor: "rgba(15, 23, 42, 0.88)",
+          bgcolor: panelBg,
           backdropFilter: "blur(10px)",
-          border: "1px solid rgba(255, 255, 255, 0.18)",
-          color: "#fff",
+          border: panelBorder,
+          color: panelColor,
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           gap: 1.5,
-          boxShadow: "0 6px 20px rgba(0,0,0,0.5)",
+          boxShadow: isDark ? "0 6px 20px rgba(0,0,0,0.5)" : "0 6px 20px rgba(0,0,0,0.1)",
         }}
       >
         <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
@@ -98,7 +106,7 @@ export default function RadarPlaybackBar({
             {isPlaying ? <PauseIcon sx={{ fontSize: 16 }} /> : <PlayArrowIcon sx={{ fontSize: 16 }} />}
           </IconButton>
 
-          <Typography variant="body2" sx={{ fontWeight: 800, fontSize: "0.85rem", color: "#60a5fa" }}>
+          <Typography variant="body2" sx={{ fontWeight: 800, fontSize: "0.85rem", color: isDark ? "#60a5fa" : "#1976d2" }}>
             ⏰ {formatFrameTime(currentFrame?.time)}
           </Typography>
 
@@ -109,15 +117,15 @@ export default function RadarPlaybackBar({
               height: 20,
               fontSize: "0.68rem",
               fontWeight: 700,
-              bgcolor: isNowcast ? "rgba(234, 179, 8, 0.25)" : isNowFrame ? "rgba(239, 68, 68, 0.25)" : "rgba(255, 255, 255, 0.12)",
-              color: isNowcast ? "#facc15" : isNowFrame ? "#f87171" : "#e2e8f0",
+              bgcolor: isNowcast ? "rgba(234, 179, 8, 0.25)" : isNowFrame ? "rgba(239, 68, 68, 0.25)" : isDark ? "rgba(255, 255, 255, 0.12)" : "rgba(0,0,0,0.08)",
+              color: isNowcast ? (isDark ? "#facc15" : "#b45309") : isNowFrame ? (isDark ? "#f87171" : "#dc2626") : "inherit",
             }}
           />
         </Stack>
 
         <Stack direction="row" spacing={0.5} sx={{ alignItems: "center" }}>
           <Tooltip title="Mở rộng thanh điều khiển">
-            <IconButton size="small" onClick={() => setIsMinimized(false)} sx={{ color: "#93c5fd", p: 0.5 }}>
+            <IconButton size="small" onClick={() => setIsMinimized(false)} sx={{ color: isDark ? "#93c5fd" : "#1976d2", p: 0.5 }}>
               <KeyboardArrowUpIcon sx={{ fontSize: 20 }} />
             </IconButton>
           </Tooltip>
@@ -133,17 +141,17 @@ export default function RadarPlaybackBar({
       sx={{
         p: 1.5,
         borderRadius: 2,
-        bgcolor: "rgba(15, 23, 42, 0.9)",
+        bgcolor: panelBg,
         backdropFilter: "blur(12px)",
-        border: "1px solid rgba(255, 255, 255, 0.15)",
-        color: "#fff",
+        border: panelBorder,
+        color: panelColor,
       }}
     >
       <Stack spacing={1}>
         {/* Top Info Row */}
         <Stack direction="row" sx={{ justifyContent: "space-between", alignItems: "center" }}>
           <Stack direction="row" spacing={1.5} sx={{ alignItems: "center" }}>
-            <Typography variant="subtitle1" sx={{ fontWeight: 800, fontSize: "1.1rem", color: "#60a5fa" }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 800, fontSize: "1.1rem", color: isDark ? "#60a5fa" : "#1976d2" }}>
               ⏰ {formatFrameTime(currentFrame?.time)}
             </Typography>
 
@@ -220,7 +228,7 @@ export default function RadarPlaybackBar({
 
           {/* Buttons */}
           <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
-            <IconButton size="small" onClick={onPrev} sx={{ color: "#fff", bgcolor: "rgba(255,255,255,0.08)" }}>
+            <IconButton size="small" onClick={onPrev} sx={{ color: btnColor, bgcolor: btnBg }}>
               <SkipPreviousIcon fontSize="small" />
             </IconButton>
 
@@ -237,7 +245,7 @@ export default function RadarPlaybackBar({
               {isPlaying ? <PauseIcon /> : <PlayArrowIcon />}
             </IconButton>
 
-            <IconButton size="small" onClick={onNext} sx={{ color: "#fff", bgcolor: "rgba(255,255,255,0.08)" }}>
+            <IconButton size="small" onClick={onNext} sx={{ color: btnColor, bgcolor: btnBg }}>
               <SkipNextIcon fontSize="small" />
             </IconButton>
           </Stack>

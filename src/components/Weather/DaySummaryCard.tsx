@@ -24,7 +24,7 @@ export default function DaySummaryCard({ summary, isSelected, onClick }: Props) 
       sx={{
         minWidth: 140,
         cursor: "pointer",
-        border: isSelected ? `2px solid ${borderColor}` : `1px solid rgba(255,255,255,0.08)`,
+        border: (theme) => isSelected ? `2px solid ${borderColor}` : `1px solid ${theme.palette.divider}`,
         boxShadow: isSelected ? `0 0 16px ${borderColor}40` : "none",
         transition: "all 0.2s ease",
         "&:hover": {

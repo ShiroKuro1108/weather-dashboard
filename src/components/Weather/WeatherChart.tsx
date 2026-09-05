@@ -1,6 +1,5 @@
-import { useMemo } from "react";
-import { Box, Tabs, Tab } from "@mui/material";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { Box, Tabs, Tab, useTheme } from "@mui/material";
 import {
   ResponsiveContainer, AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ReferenceLine, CartesianGrid,
 } from "recharts";
@@ -13,6 +12,14 @@ interface Props {
 
 export default function WeatherChart({ data, selectedDate }: Props) {
   const [tab, setTab] = useState(0);
+  const theme = useTheme();
+
+  const isDark = theme.palette.mode === "dark";
+  const axisColor = isDark ? "#8899aa" : "#64748b";
+  const gridColor = isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)";
+  const tooltipBg = isDark ? "#132f4c" : "#ffffff";
+  const tooltipBorder = isDark ? "1px solid rgba(255,255,255,0.15)" : "1px solid rgba(0,0,0,0.1)";
+  const tooltipTextColor = isDark ? "#ffffff" : "#0f172a";
 
   const filtered = useMemo(
     () => (selectedDate ? data.filter((h) => h.dateStr === selectedDate) : data.slice(0, 48)),
@@ -49,11 +56,13 @@ export default function WeatherChart({ data, selectedDate }: Props) {
                   <stop offset="95%" stopColor="#42a5f5" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
-              <XAxis dataKey="time" tick={{ fontSize: 10, fill: "#8899aa" }} interval="preserveStartEnd" />
-              <YAxis tick={{ fontSize: 10, fill: "#8899aa" }} />
+              <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
+              <XAxis dataKey="time" tick={{ fontSize: 10, fill: axisColor }} interval="preserveStartEnd" stroke={axisColor} />
+              <YAxis tick={{ fontSize: 10, fill: axisColor }} stroke={axisColor} />
               <Tooltip
-                contentStyle={{ backgroundColor: "#132f4c", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8 }}
+                contentStyle={{ backgroundColor: tooltipBg, border: tooltipBorder, color: tooltipTextColor, borderRadius: 8, boxShadow: "0 4px 12px rgba(0,0,0,0.15)" }}
+                itemStyle={{ color: tooltipTextColor }}
+                labelStyle={{ color: tooltipTextColor, fontWeight: 700 }}
               />
               <ReferenceLine y={15} stroke="#66bb6a" strokeDasharray="4 4" label={{ value: "GO ≤15", fill: "#66bb6a", fontSize: 10 }} />
               <ReferenceLine y={25} stroke="#ffa726" strokeDasharray="4 4" label={{ value: "CAUTION ≤25", fill: "#ffa726", fontSize: 10 }} />
@@ -62,11 +71,13 @@ export default function WeatherChart({ data, selectedDate }: Props) {
             </AreaChart>
           ) : tab === 1 ? (
             <BarChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
-              <XAxis dataKey="time" tick={{ fontSize: 10, fill: "#8899aa" }} interval="preserveStartEnd" />
-              <YAxis tick={{ fontSize: 10, fill: "#8899aa" }} />
+              <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
+              <XAxis dataKey="time" tick={{ fontSize: 10, fill: axisColor }} interval="preserveStartEnd" stroke={axisColor} />
+              <YAxis tick={{ fontSize: 10, fill: axisColor }} stroke={axisColor} />
               <Tooltip
-                contentStyle={{ backgroundColor: "#132f4c", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8 }}
+                contentStyle={{ backgroundColor: tooltipBg, border: tooltipBorder, color: tooltipTextColor, borderRadius: 8, boxShadow: "0 4px 12px rgba(0,0,0,0.15)" }}
+                itemStyle={{ color: tooltipTextColor }}
+                labelStyle={{ color: tooltipTextColor, fontWeight: 700 }}
               />
               <ReferenceLine y={0.5} stroke="#66bb6a" strokeDasharray="4 4" />
               <ReferenceLine y={2.0} stroke="#f44336" strokeDasharray="4 4" />
@@ -80,11 +91,13 @@ export default function WeatherChart({ data, selectedDate }: Props) {
                   <stop offset="95%" stopColor="#90a4ae" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" />
-              <XAxis dataKey="time" tick={{ fontSize: 10, fill: "#8899aa" }} interval="preserveStartEnd" />
-              <YAxis tick={{ fontSize: 10, fill: "#8899aa" }} domain={[0, 100]} />
+              <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
+              <XAxis dataKey="time" tick={{ fontSize: 10, fill: axisColor }} interval="preserveStartEnd" stroke={axisColor} />
+              <YAxis tick={{ fontSize: 10, fill: axisColor }} domain={[0, 100]} stroke={axisColor} />
               <Tooltip
-                contentStyle={{ backgroundColor: "#132f4c", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8 }}
+                contentStyle={{ backgroundColor: tooltipBg, border: tooltipBorder, color: tooltipTextColor, borderRadius: 8, boxShadow: "0 4px 12px rgba(0,0,0,0.15)" }}
+                itemStyle={{ color: tooltipTextColor }}
+                labelStyle={{ color: tooltipTextColor, fontWeight: 700 }}
               />
               <ReferenceLine y={50} stroke="#66bb6a" strokeDasharray="4 4" />
               <ReferenceLine y={85} stroke="#f44336" strokeDasharray="4 4" />

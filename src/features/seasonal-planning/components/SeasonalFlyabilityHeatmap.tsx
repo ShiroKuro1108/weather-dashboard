@@ -243,7 +243,7 @@ export default function SeasonalFlyabilityHeatmap({
                 if (group.reports.length === 0) return null;
                 return [
                   // Region Header Row
-                  <TableRow key={group.label} sx={{ bgcolor: "rgba(255,255,255,0.05)" }}>
+                  <TableRow key={group.label} sx={{ bgcolor: "action.hover" }}>
                     <TableCell
                       colSpan={13}
                       sx={{

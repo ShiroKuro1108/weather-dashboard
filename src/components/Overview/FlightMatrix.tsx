@@ -115,7 +115,7 @@ export default function FlightMatrix({ data, isLoading, progress }: Props) {
             label="28 Huyện / TX / TP"
             size="small"
             variant="outlined"
-            sx={{ fontWeight: 600, fontSize: "0.75rem", borderColor: "rgba(255,255,255,0.2)" }}
+            sx={{ fontWeight: 600, fontSize: "0.75rem", borderColor: "divider" }}
           />
         </Stack>
 
@@ -171,7 +171,7 @@ export default function FlightMatrix({ data, isLoading, progress }: Props) {
                   bgcolor: selectedDate === d.date ? "rgba(255,167,38,0.08)" : "transparent",
                   transition: "all 0.15s ease",
                   "&:hover": {
-                    bgcolor: "rgba(255,255,255,0.05)",
+                    bgcolor: "action.hover",
                   },
                 }}
               >
@@ -226,7 +226,7 @@ export default function FlightMatrix({ data, isLoading, progress }: Props) {
                     sx={{
                       alignItems: "center",
                       py: 0.3,
-                      "&:hover": { bgcolor: "rgba(255,255,255,0.03)" },
+                      "&:hover": { bgcolor: "action.hover" },
                     }}
                   >
                     {/* District name */}
@@ -248,8 +248,8 @@ export default function FlightMatrix({ data, isLoading, progress }: Props) {
                       if (!daySummary) {
                         return (
                           <Stack key={d.date} direction="row" spacing={0.5} sx={{ width: 88, flexShrink: 0, justifyContent: "center" }}>
-                            <Box sx={{ width: 40, height: 32, bgcolor: "rgba(255,255,255,0.04)", borderRadius: 0.5 }} />
-                            <Box sx={{ width: 40, height: 32, bgcolor: "rgba(255,255,255,0.04)", borderRadius: 0.5 }} />
+                            <Box sx={{ width: 40, height: 32, bgcolor: "action.hover", borderRadius: 0.5 }} />
+                            <Box sx={{ width: 40, height: 32, bgcolor: "action.hover", borderRadius: 0.5 }} />
                           </Stack>
                         );
                       }

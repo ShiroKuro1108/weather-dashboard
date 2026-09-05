@@ -23,6 +23,7 @@ import {
   ListItemText,
   OutlinedInput,
   Button,
+  useTheme,
 } from "@mui/material";
 import {
   ResponsiveContainer,
@@ -125,6 +126,14 @@ const DEFAULT_SELECTED_DISTRICT_IDS = [
 ];
 
 export default function SeasonalCharts({ reports, selectedLocationId }: Props) {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
+  const axisColor = isDark ? "#90caf9" : "#1976d2";
+  const gridColor = isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)";
+  const tooltipBg = isDark ? "#132f4c" : "#ffffff";
+  const tooltipBorder = isDark ? "#90caf9" : "#1976d2";
+  const tooltipTextColor = isDark ? "#ffffff" : "#0f172a";
+
   const [viewMode, setViewMode] = useState<"single" | "compare">("compare");
   const [metric, setMetric] = useState<MetricType>("precipitation");
 
@@ -410,19 +419,23 @@ export default function SeasonalCharts({ reports, selectedLocationId }: Props) {
           {viewMode === "compare" ? (
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={comparisonData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" />
-                <XAxis dataKey="month" stroke="#90caf9" />
-                <YAxis stroke="#90caf9" />
+                <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
+                <XAxis dataKey="month" stroke={axisColor} />
+                <YAxis stroke={axisColor} />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "#132f4c",
-                    borderColor: "#90caf9",
+                    backgroundColor: tooltipBg,
+                    borderColor: tooltipBorder,
+                    color: tooltipTextColor,
                     borderRadius: 8,
                     fontSize: "0.85rem",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
                   }}
+                  itemStyle={{ color: tooltipTextColor }}
+                  labelStyle={{ color: tooltipTextColor, fontWeight: 700 }}
                   formatter={(value: any) => [`${value} ${metricCfg.unit}`, metricCfg.label]}
                 />
-                <Legend wrapperStyle={{ paddingTop: 10, fontSize: "0.8rem" }} />
+                <Legend wrapperStyle={{ paddingTop: 10, fontSize: "0.8rem", color: tooltipTextColor }} />
                 {comparedReports.map((r, idx) => (
                   <Bar
                     key={r.location.id}
@@ -437,35 +450,47 @@ export default function SeasonalCharts({ reports, selectedLocationId }: Props) {
             <ResponsiveContainer width="100%" height="100%">
               {metric === "precipitation" || metric === "rainy_days" || metric === "dry_days" ? (
                 <ComposedChart data={singleLocationData} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" />
-                  <XAxis dataKey="month" stroke="#90caf9" />
+                  <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
+                  <XAxis dataKey="month" stroke={axisColor} />
                   <YAxis yAxisId="left" stroke="#29b6f6" label={{ value: "Lượng mưa (mm)", angle: -90, position: "insideLeft", fill: "#29b6f6" }} />
                   <YAxis yAxisId="right" orientation="right" stroke="#ef5350" label={{ value: "Ngày mưa", angle: 90, position: "insideRight", fill: "#ef5350" }} domain={[0, 31]} />
-                  <Tooltip contentStyle={{ backgroundColor: "#132f4c", borderColor: "#90caf9", borderRadius: 8 }} />
-                  <Legend />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: tooltipBg, borderColor: tooltipBorder, color: tooltipTextColor, borderRadius: 8, boxShadow: "0 4px 12px rgba(0,0,0,0.15)" }}
+                    itemStyle={{ color: tooltipTextColor }}
+                    labelStyle={{ color: tooltipTextColor, fontWeight: 700 }}
+                  />
+                  <Legend wrapperStyle={{ color: tooltipTextColor }} />
                   <Bar yAxisId="left" dataKey="precipitation" fill="#29b6f6" name="Lượng mưa (mm)" radius={[4, 4, 0, 0]} />
                   <Line yAxisId="right" type="monotone" dataKey="rainy_days" stroke="#ef5350" strokeWidth={3} dot={{ r: 4 }} name="Số ngày mưa (ngày)" />
                   <Line yAxisId="right" type="monotone" dataKey="dry_days" stroke="#66bb6a" strokeWidth={2} strokeDasharray="4 4" dot={{ r: 3 }} name="Số ngày khô (ngày)" />
                 </ComposedChart>
               ) : metric === "wind" || metric === "sunshine" ? (
                 <ComposedChart data={singleLocationData} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" />
-                  <XAxis dataKey="month" stroke="#90caf9" />
+                  <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
+                  <XAxis dataKey="month" stroke={axisColor} />
                   <YAxis yAxisId="left" stroke="#ffa726" label={{ value: "Gió (km/h)", angle: -90, position: "insideLeft", fill: "#ffa726" }} />
                   <YAxis yAxisId="right" orientation="right" stroke="#ffca28" label={{ value: "Giờ nắng/ngày", angle: 90, position: "insideRight", fill: "#ffca28" }} domain={[0, 12]} />
-                  <Tooltip contentStyle={{ backgroundColor: "#132f4c", borderColor: "#90caf9", borderRadius: 8 }} />
-                  <Legend />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: tooltipBg, borderColor: tooltipBorder, color: tooltipTextColor, borderRadius: 8, boxShadow: "0 4px 12px rgba(0,0,0,0.15)" }}
+                    itemStyle={{ color: tooltipTextColor }}
+                    labelStyle={{ color: tooltipTextColor, fontWeight: 700 }}
+                  />
+                  <Legend wrapperStyle={{ color: tooltipTextColor }} />
                   <Bar yAxisId="left" dataKey="windSpeed" fill="#ffa726" name="Gió TB (km/h)" radius={[4, 4, 0, 0]} />
                   <Line yAxisId="left" type="monotone" dataKey="windGust" stroke="#ff7043" strokeWidth={2} strokeDasharray="3 3" name="Gió giật max (km/h)" />
                   <Line yAxisId="right" type="monotone" dataKey="sunshine" stroke="#ffca28" strokeWidth={3} dot={{ r: 4 }} name="Giờ nắng (h/ngày)" />
                 </ComposedChart>
               ) : (
                 <ComposedChart data={singleLocationData} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" />
-                  <XAxis dataKey="month" stroke="#90caf9" />
+                  <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
+                  <XAxis dataKey="month" stroke={axisColor} />
                   <YAxis stroke="#ff8a65" label={{ value: "Nhiệt độ (°C)", angle: -90, position: "insideLeft", fill: "#ff8a65" }} domain={[10, 42]} />
-                  <Tooltip contentStyle={{ backgroundColor: "#132f4c", borderColor: "#90caf9", borderRadius: 8 }} />
-                  <Legend />
+                  <Tooltip
+                    contentStyle={{ backgroundColor: tooltipBg, borderColor: tooltipBorder, color: tooltipTextColor, borderRadius: 8, boxShadow: "0 4px 12px rgba(0,0,0,0.15)" }}
+                    itemStyle={{ color: tooltipTextColor }}
+                    labelStyle={{ color: tooltipTextColor, fontWeight: 700 }}
+                  />
+                  <Legend wrapperStyle={{ color: tooltipTextColor }} />
                   <Area type="monotone" dataKey="tempMax" fill="rgba(255, 112, 67, 0.2)" stroke="#ff7043" strokeWidth={2} name="Nhiệt độ Max (°C)" />
                   <Line type="monotone" dataKey="tempAvg" stroke="#ffb74d" strokeWidth={3} dot={{ r: 4 }} name="Nhiệt độ TB (°C)" />
                   <Line type="monotone" dataKey="tempMin" stroke="#4fc3f7" strokeWidth={2} strokeDasharray="4 4" name="Nhiệt độ Min (°C)" />

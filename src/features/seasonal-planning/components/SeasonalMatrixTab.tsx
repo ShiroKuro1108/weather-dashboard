@@ -61,14 +61,14 @@ export default function SeasonalMatrixTab({
             py: 0.6,
             px: 0.8,
             borderRadius: 1.5,
-            bgcolor: "rgba(255, 202, 40, 0.16)",
-            border: "1px solid rgba(255, 202, 40, 0.5)",
+            bgcolor: (theme) => theme.palette.mode === "dark" ? "rgba(255, 202, 40, 0.16)" : "rgba(245, 158, 11, 0.12)",
+            border: (theme) => theme.palette.mode === "dark" ? "1px solid rgba(255, 202, 40, 0.5)" : "1px solid rgba(245, 158, 11, 0.4)",
             textAlign: "center",
           }}
         >
           <Stack direction="row" spacing={0.3} sx={{ justifyContent: "center", alignItems: "center" }}>
-            <WbSunnyIcon sx={{ color: "#ffca28", fontSize: 13 }} />
-            <Typography variant="caption" sx={{ color: "#ffe082", fontWeight: 700, fontSize: "0.7rem" }}>
+            <WbSunnyIcon sx={{ color: (theme) => theme.palette.mode === "dark" ? "#ffca28" : "#d97706", fontSize: 13 }} />
+            <Typography variant="caption" sx={{ color: (theme) => theme.palette.mode === "dark" ? "#ffe082" : "#b45309", fontWeight: 700, fontSize: "0.7rem" }}>
               MÙA KHÔ
             </Typography>
           </Stack>
@@ -86,18 +86,18 @@ export default function SeasonalMatrixTab({
             py: 0.6,
             px: 0.8,
             borderRadius: 1.5,
-            bgcolor: "rgba(239, 83, 80, 0.22)",
-            border: "1px solid rgba(239, 83, 80, 0.6)",
+            bgcolor: (theme) => theme.palette.mode === "dark" ? "rgba(239, 83, 80, 0.22)" : "rgba(239, 68, 68, 0.12)",
+            border: (theme) => theme.palette.mode === "dark" ? "1px solid rgba(239, 83, 80, 0.6)" : "1px solid rgba(239, 68, 68, 0.4)",
             textAlign: "center",
           }}
         >
           <Stack direction="row" spacing={0.3} sx={{ justifyContent: "center", alignItems: "center" }}>
-            <ThunderstormIcon sx={{ color: "#ef5350", fontSize: 13 }} />
-            <Typography variant="caption" sx={{ color: "#ef5350", fontWeight: 700, fontSize: "0.7rem" }}>
+            <ThunderstormIcon sx={{ color: (theme) => theme.palette.mode === "dark" ? "#ef5350" : "#dc2626", fontSize: 13 }} />
+            <Typography variant="caption" sx={{ color: (theme) => theme.palette.mode === "dark" ? "#ef5350" : "#b91c1c", fontWeight: 700, fontSize: "0.7rem" }}>
               MƯA BÃO
             </Typography>
           </Stack>
-          <Typography variant="caption" sx={{ color: "#ffcdd2", fontSize: "0.65rem", display: "block" }}>
+          <Typography variant="caption" sx={{ color: (theme) => theme.palette.mode === "dark" ? "#ffcdd2" : "text.secondary", fontSize: "0.65rem", display: "block" }}>
             {rainMm} mm
           </Typography>
         </Box>
@@ -111,13 +111,13 @@ export default function SeasonalMatrixTab({
             py: 0.6,
             px: 0.8,
             borderRadius: 1.5,
-            bgcolor: "rgba(38, 166, 154, 0.16)",
-            border: "1px solid rgba(38, 166, 154, 0.5)",
+            bgcolor: (theme) => theme.palette.mode === "dark" ? "rgba(38, 166, 154, 0.16)" : "rgba(13, 148, 136, 0.12)",
+            border: (theme) => theme.palette.mode === "dark" ? "1px solid rgba(38, 166, 154, 0.5)" : "1px solid rgba(13, 148, 136, 0.4)",
             textAlign: "center",
           }}
         >
           <Stack direction="row" spacing={0.3} sx={{ justifyContent: "center", alignItems: "center" }}>
-            <Typography variant="caption" sx={{ color: "#80cbc4", fontWeight: 700, fontSize: "0.7rem" }}>
+            <Typography variant="caption" sx={{ color: (theme) => theme.palette.mode === "dark" ? "#80cbc4" : "#0f766e", fontWeight: 700, fontSize: "0.7rem" }}>
               ⛅ GIAO MÙA
             </Typography>
           </Stack>
@@ -134,13 +134,13 @@ export default function SeasonalMatrixTab({
           py: 0.6,
           px: 0.8,
           borderRadius: 1.5,
-          bgcolor: "rgba(41, 182, 246, 0.16)",
-          border: "1px solid rgba(41, 182, 246, 0.4)",
+          bgcolor: (theme) => theme.palette.mode === "dark" ? "rgba(41, 182, 246, 0.16)" : "rgba(2, 132, 199, 0.12)",
+          border: (theme) => theme.palette.mode === "dark" ? "1px solid rgba(41, 182, 246, 0.4)" : "1px solid rgba(2, 132, 199, 0.4)",
           textAlign: "center",
         }}
       >
         <Stack direction="row" spacing={0.3} sx={{ justifyContent: "center", alignItems: "center" }}>
-          <Typography variant="caption" sx={{ color: "#81d4fa", fontWeight: 700, fontSize: "0.7rem" }}>
+          <Typography variant="caption" sx={{ color: (theme) => theme.palette.mode === "dark" ? "#81d4fa" : "#0369a1", fontWeight: 700, fontSize: "0.7rem" }}>
             🌧️ MÙA MƯA
           </Typography>
         </Stack>
@@ -240,7 +240,7 @@ export default function SeasonalMatrixTab({
               {groupedReports.map((group) => {
                 if (group.reports.length === 0) return null;
                 return [
-                  <TableRow key={group.label} sx={{ bgcolor: "rgba(255,255,255,0.05)" }}>
+                  <TableRow key={group.label} sx={{ bgcolor: "action.hover" }}>
                     <TableCell
                       colSpan={13}
                       sx={{
