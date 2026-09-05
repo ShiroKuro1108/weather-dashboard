@@ -278,12 +278,12 @@ function generateDailyMatrixWorksheetXml(
       <!-- Title & Header Banner -->
       <Row ss:Height="28">
         <Cell ss:MergeAcross="${mergeSpan}" ss:StyleID="MainTitle">
-          <Data ss:Type="String">BẢNG TỔNG HỢP KẾ HOẠCH ĐIỀU KIỆN BAY UAV THEO CA (7 NGÀY TỚI)</Data>
+          <Data ss:Type="String">BẢNG TỔNG HỢP KẾ HOẠCH ĐIỀU KIỆN BAY THEO THỜI TIẾT 7 NGÀY TỚI</Data>
         </Cell>
       </Row>
       <Row ss:Height="20">
         <Cell ss:MergeAcross="${mergeSpan}" ss:StyleID="SubTitle">
-          <Data ss:Type="String">HỆ THỐNG DỰ BÁO &amp; LẬP KẾ HOẠCH KHẢO SÁT UAV VDCD FLIGHT PLANNER — 28 ĐỊA BÀN</Data>
+          <Data ss:Type="String">HỆ THỐNG DỰ BÁO &amp; LẬP KẾ HOẠCH KHẢO SÁT - 28 ĐỊA BÀN</Data>
         </Cell>
       </Row>
       <Row ss:Height="6"/>
@@ -303,11 +303,11 @@ function generateDailyMatrixWorksheetXml(
       <!-- Legend Explanation Block -->
       <Row ss:Height="22">
         <Cell ss:StyleID="CellGo"><Data ss:Type="String">6h / 3h</Data></Cell>
-        <Cell ss:MergeAcross="3" ss:StyleID="LegendVal"><Data ss:Type="String">🟢 BAY ĐƯỢC (GO) • Thời tiết thuận lợi</Data></Cell>
+        <Cell ss:MergeAcross="3" ss:StyleID="LegendVal"><Data ss:Type="String">BAY ĐƯỢC • Thời tiết thuận lợi</Data></Cell>
         <Cell ss:StyleID="CellCaution"><Data ss:Type="String">2h / 1h</Data></Cell>
-        <Cell ss:MergeAcross="4" ss:StyleID="LegendVal"><Data ss:Type="String">🟡 CẨN TRỌNG (CAUTION) • Gió mạnh / nguy cơ mưa rào</Data></Cell>
+        <Cell ss:MergeAcross="4" ss:StyleID="LegendVal"><Data ss:Type="String">CẨN TRỌNG• Gió mạnh / nguy cơ mưa rào</Data></Cell>
         <Cell ss:StyleID="CellNoGo"><Data ss:Type="String">✕</Data></Cell>
-        <Cell ss:MergeAcross="${mergeSpan - 11}" ss:StyleID="LegendVal"><Data ss:Type="String">🔴 KHÔNG BAY (NO_GO) • Mưa / dông bão / gió giật</Data></Cell>
+        <Cell ss:MergeAcross="${mergeSpan - 11}" ss:StyleID="LegendVal"><Data ss:Type="String">KHÔNG BAY • Mưa / dông bão / gió giật</Data></Cell>
       </Row>
       <Row ss:Height="8"/>
 
@@ -317,12 +317,12 @@ function generateDailyMatrixWorksheetXml(
         <Cell ss:StyleID="TableHeaderL1"><Data ss:Type="String">Địa bàn (Huyện/TX/TP)</Data></Cell>
         <Cell ss:StyleID="TableHeaderL1"><Data ss:Type="String">Khu vực</Data></Cell>
         ${dates
-          .map((d, idx) => {
-            const dayLabel = idx === 0 ? "HÔM NAY" : d.dayOfWeek;
-            const dateShort = d.date.substring(5).replace("-", "/");
-            return `<Cell ss:MergeAcross="1" ss:StyleID="TableHeaderL1"><Data ss:Type="String">${escapeXml(dayLabel)} (${escapeXml(dateShort)})</Data></Cell>`;
-          })
-          .join("\n        ")}
+      .map((d, idx) => {
+        const dayLabel = idx === 0 ? "HÔM NAY" : d.dayOfWeek;
+        const dateShort = d.date.substring(5).replace("-", "/");
+        return `<Cell ss:MergeAcross="1" ss:StyleID="TableHeaderL1"><Data ss:Type="String">${escapeXml(dayLabel)} (${escapeXml(dateShort)})</Data></Cell>`;
+      })
+      .join("\n        ")}
         <Cell ss:StyleID="TableHeaderL1"><Data ss:Type="String">Tổng giờ bay</Data></Cell>
         <Cell ss:StyleID="TableHeaderL1"><Data ss:Type="String">Số ca GO</Data></Cell>
         <Cell ss:StyleID="TableHeaderL1"><Data ss:Type="String">Đánh giá chung</Data></Cell>
@@ -334,11 +334,11 @@ function generateDailyMatrixWorksheetXml(
         <Cell ss:StyleID="TableHeaderL2"><Data ss:Type="String">Đơn vị hành chính</Data></Cell>
         <Cell ss:StyleID="TableHeaderL2"><Data ss:Type="String">Tỉnh</Data></Cell>
         ${dates
-          .map(
-            () =>
-              `<Cell ss:StyleID="TableHeaderL2"><Data ss:Type="String">Sáng (06-12h)</Data></Cell>\n        <Cell ss:StyleID="TableHeaderL2"><Data ss:Type="String">Chiều (12-18h)</Data></Cell>`
-          )
-          .join("\n        ")}
+      .map(
+        () =>
+          `<Cell ss:StyleID="TableHeaderL2"><Data ss:Type="String">Sáng (06-12h)</Data></Cell>\n        <Cell ss:StyleID="TableHeaderL2"><Data ss:Type="String">Chiều (12-18h)</Data></Cell>`
+      )
+      .join("\n        ")}
         <Cell ss:StyleID="TableHeaderL2"><Data ss:Type="String">(7 ngày)</Data></Cell>
         <Cell ss:StyleID="TableHeaderL2"><Data ss:Type="String">(/14 ca)</Data></Cell>
         <Cell ss:StyleID="TableHeaderL2"><Data ss:Type="String">toàn tuần</Data></Cell>
@@ -346,51 +346,51 @@ function generateDailyMatrixWorksheetXml(
 
       <!-- Table Rows Grouped by Region -->
       ${regions
-        .map((region) => {
-          const rows = region.districts
-            .map((district, dIdx) => {
-              const dwd = data.get(district.id);
-              let totalGoHours = 0;
-              let goSessionsCount = 0;
-              let totalSessions = 0;
+      .map((region) => {
+        const rows = region.districts
+          .map((district, dIdx) => {
+            const dwd = data.get(district.id);
+            let totalGoHours = 0;
+            let goSessionsCount = 0;
+            let totalSessions = 0;
 
-              const sessionCells = dates
-                .map((d) => {
-                  const daySummary = dwd?.daySummaries.find((s) => s.date === d.date);
-                  if (!daySummary) {
-                    return `<Cell ss:StyleID="CellCenter"><Data ss:Type="String">-</Data></Cell>\n        <Cell ss:StyleID="CellCenter"><Data ss:Type="String">-</Data></Cell>`;
-                  }
+            const sessionCells = dates
+              .map((d) => {
+                const daySummary = dwd?.daySummaries.find((s) => s.date === d.date);
+                if (!daySummary) {
+                  return `<Cell ss:StyleID="CellCenter"><Data ss:Type="String">-</Data></Cell>\n        <Cell ss:StyleID="CellCenter"><Data ss:Type="String">-</Data></Cell>`;
+                }
 
-                  totalSessions += 2;
-                  if (daySummary.morning.condition === "GO") goSessionsCount++;
-                  if (daySummary.afternoon.condition === "GO") goSessionsCount++;
-                  totalGoHours += daySummary.morning.goHours + daySummary.afternoon.goHours;
+                totalSessions += 2;
+                if (daySummary.morning.condition === "GO") goSessionsCount++;
+                if (daySummary.afternoon.condition === "GO") goSessionsCount++;
+                totalGoHours += daySummary.morning.goHours + daySummary.afternoon.goHours;
 
-                  const getCellStyle = (cond: FlightCondition) =>
-                    cond === "GO" ? "CellGo" : cond === "CAUTION" ? "CellCaution" : "CellNoGo";
+                const getCellStyle = (cond: FlightCondition) =>
+                  cond === "GO" ? "CellGo" : cond === "CAUTION" ? "CellCaution" : "CellNoGo";
 
-                  const getCellContent = (goHours: number, cond: FlightCondition) =>
-                    cond === "NO_GO" ? "✕" : `${goHours}h`;
+                const getCellContent = (goHours: number, cond: FlightCondition) =>
+                  cond === "NO_GO" ? "✕" : `${goHours}h`;
 
-                  const mStyle = getCellStyle(daySummary.morning.condition);
-                  const aStyle = getCellStyle(daySummary.afternoon.condition);
-                  const mText = getCellContent(daySummary.morning.goHours, daySummary.morning.condition);
-                  const aText = getCellContent(daySummary.afternoon.goHours, daySummary.afternoon.condition);
+                const mStyle = getCellStyle(daySummary.morning.condition);
+                const aStyle = getCellStyle(daySummary.afternoon.condition);
+                const mText = getCellContent(daySummary.morning.goHours, daySummary.morning.condition);
+                const aText = getCellContent(daySummary.afternoon.goHours, daySummary.afternoon.condition);
 
-                  return `<Cell ss:StyleID="${mStyle}"><Data ss:Type="String">${escapeXml(mText)}</Data></Cell>\n        <Cell ss:StyleID="${aStyle}"><Data ss:Type="String">${escapeXml(aText)}</Data></Cell>`;
-                })
-                .join("\n        ");
+                return `<Cell ss:StyleID="${mStyle}"><Data ss:Type="String">${escapeXml(mText)}</Data></Cell>\n        <Cell ss:StyleID="${aStyle}"><Data ss:Type="String">${escapeXml(aText)}</Data></Cell>`;
+              })
+              .join("\n        ");
 
-              const generalEvaluation =
-                totalGoHours >= 28
-                  ? "Rất thuận lợi"
-                  : totalGoHours >= 14
+            const generalEvaluation =
+              totalGoHours >= 28
+                ? "Rất thuận lợi"
+                : totalGoHours >= 14
                   ? "Khá thuận lợi"
                   : totalGoHours >= 7
-                  ? "Cần chọn lọc ca"
-                  : "Mưa gió nhiều";
+                    ? "Cần chọn lọc ca"
+                    : "Mưa gió nhiều";
 
-              return `
+            return `
       <Row ss:Height="24">
         <Cell ss:StyleID="CellCenter"><Data ss:Type="Number">${dIdx + 1}</Data></Cell>
         <Cell ss:StyleID="CellNormal"><Data ss:Type="String">${escapeXml(district.name)}</Data></Cell>
@@ -400,37 +400,37 @@ function generateDailyMatrixWorksheetXml(
         <Cell ss:StyleID="CellCenter"><Data ss:Type="String">${goSessionsCount}/${totalSessions} ca</Data></Cell>
         <Cell ss:StyleID="CellNormal"><Data ss:Type="String">${escapeXml(generalEvaluation)}</Data></Cell>
       </Row>`;
-            })
-            .join("");
+          })
+          .join("");
 
-          // Calculate regional averages for each session
-          const avgSessionCells = dates
-            .map((d) => {
-              let mSum = 0;
-              let aSum = 0;
-              let count = 0;
+        // Calculate regional averages for each session
+        const avgSessionCells = dates
+          .map((d) => {
+            let mSum = 0;
+            let aSum = 0;
+            let count = 0;
 
-              for (const district of region.districts) {
-                const dwd = data.get(district.id);
-                const ds = dwd?.daySummaries.find((s) => s.date === d.date);
-                if (ds) {
-                  mSum += ds.morning.goHours;
-                  aSum += ds.afternoon.goHours;
-                  count++;
-                }
+            for (const district of region.districts) {
+              const dwd = data.get(district.id);
+              const ds = dwd?.daySummaries.find((s) => s.date === d.date);
+              if (ds) {
+                mSum += ds.morning.goHours;
+                aSum += ds.afternoon.goHours;
+                count++;
               }
+            }
 
-              const mAvg = count > 0 ? (mSum / count).toFixed(1) : "0.0";
-              const aAvg = count > 0 ? (aSum / count).toFixed(1) : "0.0";
-              return `<Cell ss:StyleID="CellTotal"><Data ss:Type="String">${mAvg}h</Data></Cell>\n        <Cell ss:StyleID="CellTotal"><Data ss:Type="String">${aAvg}h</Data></Cell>`;
-            })
-            .join("\n        ");
+            const mAvg = count > 0 ? (mSum / count).toFixed(1) : "0.0";
+            const aAvg = count > 0 ? (aSum / count).toFixed(1) : "0.0";
+            return `<Cell ss:StyleID="CellTotal"><Data ss:Type="String">${mAvg}h</Data></Cell>\n        <Cell ss:StyleID="CellTotal"><Data ss:Type="String">${aAvg}h</Data></Cell>`;
+          })
+          .join("\n        ");
 
-          return `
+        return `
       <!-- Section Header -->
       <Row ss:Height="26">
         <Cell ss:MergeAcross="${mergeSpan}" ss:StyleID="${region.style}">
-          <Data ss:Type="String">📍 ${escapeXml(region.label)}</Data>
+          <Data ss:Type="String">${escapeXml(region.label)}</Data>
         </Cell>
       </Row>
       ${rows}
@@ -440,15 +440,15 @@ function generateDailyMatrixWorksheetXml(
         ${avgSessionCells}
         <Cell ss:MergeAcross="2" ss:StyleID="CellTotal"><Data ss:Type="String">Theo ca Sáng / Chiều</Data></Cell>
       </Row>`;
-        })
-        .join("")}
+      })
+      .join("")}
 
       <Row ss:Height="12"/>
 
       <!-- Operational Dispatch Guidelines -->
       <Row ss:Height="22">
         <Cell ss:MergeAcross="${mergeSpan}" ss:StyleID="SubTitle">
-          <Data ss:Type="String">HƯỚNG DẪN ĐIỀU HÀNH TÁC CHIẾN BAY UAV THEO CA:</Data>
+          <Data ss:Type="String">HƯỚNG DẪN:</Data>
         </Cell>
       </Row>
       <Row ss:Height="22">
@@ -463,7 +463,7 @@ function generateDailyMatrixWorksheetXml(
       </Row>
       <Row ss:Height="22">
         <Cell ss:MergeAcross="${mergeSpan}" ss:StyleID="CellNormal">
-          <Data ss:Type="String">3. Khi gặp ô màu Đỏ (✕) hoặc Cam: Nghiêm cấm bay tầm xa ngoài tầm nhìn (BVLOS), chuyển trọng tâm sang biên tập nội nghiệp và nạp ắc quy.</Data>
+          <Data ss:Type="String">3. Khi gặp ô màu Đỏ (✕) hoặc Cam: Nghiêm cấm bay tầm xa ngoài tầm nhìn (BVLOS).</Data>
         </Cell>
       </Row>
     </Table>
