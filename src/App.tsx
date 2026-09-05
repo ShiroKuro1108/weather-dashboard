@@ -133,7 +133,7 @@ export default function App() {
           </Alert>
         </Snackbar>
 
-        {/* ===== TAB 0: TỔNG QUAN — Ma trận 28 huyện ===== */}
+        {/* ===== TAB 0: TỔNG QUAN — Kế hoạch 28 huyện ===== */}
         {tabIndex === 0 && (
           <FlightMatrix
             data={allDistrictsData.data}

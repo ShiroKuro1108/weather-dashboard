@@ -141,7 +141,7 @@ export default function SeasonalDashboard() {
           <Tab
             icon={<GridViewIcon sx={{ fontSize: 18 }} />}
             iconPosition="start"
-            label="Ma trận Mùa vụ 28 Huyện"
+            label="Kế hoạch Mùa vụ 28 Huyện"
             sx={{ textTransform: "none", fontWeight: 700 }}
           />
           <Tab

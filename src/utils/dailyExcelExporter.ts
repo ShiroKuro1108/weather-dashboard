@@ -264,7 +264,7 @@ function generateDailyMatrixWorksheetXml(
   ];
 
   return `
-  <Worksheet ss:Name="Ma tran 7 ngay">
+  <Worksheet ss:Name="Ke hoach 7 ngay">
     <Table ss:DefaultRowHeight="24">
       <Column ss:Width="45"/>  <!-- STT -->
       <Column ss:Width="150"/> <!-- Huyện/Thị xã/TP -->
@@ -278,7 +278,7 @@ function generateDailyMatrixWorksheetXml(
       <!-- Title & Header Banner -->
       <Row ss:Height="28">
         <Cell ss:MergeAcross="${mergeSpan}" ss:StyleID="MainTitle">
-          <Data ss:Type="String">BẢNG TỔNG HỢP MA TRẬN ĐIỀU KIỆN BAY UAV THEO CA (7 NGÀY TỚI)</Data>
+          <Data ss:Type="String">BẢNG TỔNG HỢP KẾ HOẠCH ĐIỀU KIỆN BAY UAV THEO CA (7 NGÀY TỚI)</Data>
         </Cell>
       </Row>
       <Row ss:Height="20">
@@ -502,7 +502,7 @@ export function exportDailyOverviewMatrixToExcel(
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `Ma_tran_lich_bay_7_ngay_VDCD_${todayStr}.xls`;
+  link.download = `Ke_hoach_lich_bay_7_ngay_VDCD_${todayStr}.xls`;
   link.click();
   URL.revokeObjectURL(url);
 }

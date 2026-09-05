@@ -109,7 +109,7 @@ export default function FlightMatrix({ data, isLoading, progress }: Props) {
       >
         <Stack direction="row" spacing={1.5} sx={{ alignItems: "center" }}>
           <Typography variant="h6" sx={{ fontWeight: 700, fontSize: "1.05rem" }}>
-            📊 Ma trận Điều kiện bay theo Ca (7 ngày)
+            📊 Kế hoạch Điều kiện bay theo Ca (7 ngày)
           </Typography>
           <Chip
             label="28 Huyện / TX / TP"
@@ -119,7 +119,7 @@ export default function FlightMatrix({ data, isLoading, progress }: Props) {
           />
         </Stack>
 
-        <Tooltip title="Xuất toàn bộ ma trận lịch bay 7 ngày của 28 huyện ra file Excel">
+        <Tooltip title="Xuất toàn bộ kế hoạch lịch bay 7 ngày của 28 huyện ra file Excel">
           <span>
             <Button
               variant="contained"

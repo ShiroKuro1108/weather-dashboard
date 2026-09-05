@@ -161,7 +161,7 @@ export default function SeasonalMatrixTab({
         >
           <Box>
             <Typography variant="h6" sx={{ fontWeight: 700, color: "primary.main" }}>
-              Ma trận Phân bố Mùa vụ Toàn bộ 28 Huyện theo Khu vực
+              Kế hoạch Phân bố Mùa vụ Toàn bộ 28 Huyện theo Khu vực
             </Typography>
             <Typography variant="caption" sx={{ color: "text.secondary" }}>
               Hiển thị đầy đủ 28 đơn vị hành chính • Bấm vào huyện bất kỳ để chuyển sang bảng số liệu chi tiết

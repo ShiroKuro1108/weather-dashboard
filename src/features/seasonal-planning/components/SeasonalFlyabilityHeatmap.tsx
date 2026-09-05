@@ -195,7 +195,7 @@ export default function SeasonalFlyabilityHeatmap({
         >
           <Box>
             <Typography variant="h6" sx={{ fontWeight: 700, color: "primary.main" }}>
-              Ma trận Phân bố Mùa vụ 12 Tháng theo Khu vực
+              Kế hoạch Phân bố Mùa vụ 12 Tháng theo Khu vực
             </Typography>
             <Typography variant="caption" sx={{ color: "text.secondary" }}>
               Nhìn nhanh để biết ngay tháng nào mùa mưa / mùa khô tại từng huyện • Bấm vào huyện để xem chi tiết
