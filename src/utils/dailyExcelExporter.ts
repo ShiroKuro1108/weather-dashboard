@@ -266,7 +266,7 @@ function generateDailyMatrixWorksheetXml(
   return `
   <Worksheet ss:Name="Ke hoach 7 ngay">
     <Table ss:DefaultRowHeight="24">
-      <Column ss:Width="45"/>  <!-- STT -->
+      <Column ss:Width="90"/>  <!-- STT -->
       <Column ss:Width="150"/> <!-- Huyện/Thị xã/TP -->
       <Column ss:Width="95"/>  <!-- Tỉnh/Khu vực -->
       <!-- 14 Columns for 7 Days (Morning / Afternoon) -->
@@ -294,7 +294,7 @@ function generateDailyMatrixWorksheetXml(
         <Cell ss:MergeAcross="1" ss:StyleID="MetaVal"><Data ss:Type="String">${escapeXml(dateStr)}</Data></Cell>
         <Cell ss:StyleID="MetaLabel"><Data ss:Type="String">Nguồn dự báo:</Data></Cell>
         <Cell ss:MergeAcross="2" ss:StyleID="MetaVal"><Data ss:Type="String">Open-Meteo Hourly Forecast API (7 ngày)</Data></Cell>
-        <Cell ss:StyleID="MetaLabel"><Data ss:Type="String">Tiêu chuẩn bay:</Data></Cell>
+        <Cell ss:StyleID="MetaLabel"><Data ss:Type="String">Tiêu chuẩn:</Data></Cell>
         <Cell ss:MergeAcross="${mergeSpan - 7}" ss:StyleID="MetaVal">
           <Data ss:Type="String">Gió &lt;= ${thresholds?.windSpeedGo ?? 20}km/h (Cảnh báo &lt;= ${thresholds?.windSpeedCaution ?? 28}km/h), Mưa &lt;= ${thresholds?.precipitationGo ?? 0.5}mm</Data>
         </Cell>
